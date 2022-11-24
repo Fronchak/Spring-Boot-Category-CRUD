@@ -52,8 +52,11 @@ public class CategoryController {
 	}
 	
 	@PutMapping(value = "/v1")
-	public Category update(@RequestBody Category category) {
-		return service.update(category);
+	public CategoryV1VO update(@RequestBody CategoryV1VO vo) {
+		Category category = mapper.convertV1VOToEntity(vo);
+		Category entity = service.update(category);
+		CategoryV1VO categoryVO = mapper.convertEntityToVO(entity);
+		return categoryVO;
 	}
 	
 	@DeleteMapping(value = "/v1/{id}")
