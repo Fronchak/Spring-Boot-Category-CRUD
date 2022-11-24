@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fronchak.api.mapper.CategoryMapper;
+import com.fronchak.api.vo.category.CategoryInsertV1VO;
+import com.fronchak.api.vo.category.CategoryV1VO;
 import com.fronchak.domain.entities.Category;
 import com.fronchak.domain.services.CategoryService;
 
@@ -24,15 +27,23 @@ public class CategoryController {
 	@Autowired
 	private CategoryService service;
 	
+	@Autowired
+	private CategoryMapper mapper;
+	
 	@PostMapping(value = "/v1")
 	@ResponseStatus(HttpStatus.CREATED)
-	public Category save(@RequestBody Category category) {
-		return service.save(category);
+	public CategoryV1VO save(@RequestBody CategoryInsertV1VO insertV1VO) {
+		Category category = mapper.convertInsertVOToEntity(insertV1VO);
+		Category entity = service.save(category);
+		CategoryV1VO vo = mapper.convertEntityToVO(entity);
+		return vo;
 	}
 	
 	@GetMapping(value = "/v1/{id}")
-	public Category findById(@PathVariable(name = "id") Long id) {
-		return service.findById(id);
+	public CategoryV1VO findById(@PathVariable(name = "id") Long id) {
+		Category entity = service.findById(id);
+		CategoryV1VO vo = mapper.convertEntityToVO(entity);
+		return vo;
 	}
 	
 	@GetMapping(value = "/v1")
