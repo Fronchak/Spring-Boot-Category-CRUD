@@ -2,6 +2,8 @@ package com.fronchak.api.controllers;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,7 +34,7 @@ public class CategoryController {
 	
 	@PostMapping(value = "/v1")
 	@ResponseStatus(HttpStatus.CREATED)
-	public CategoryV1VO save(@RequestBody CategoryInsertV1VO insertV1VO) {
+	public CategoryV1VO save(@Valid @RequestBody CategoryInsertV1VO insertV1VO) {
 		Category category = mapper.convertInsertVOToEntity(insertV1VO);
 		Category entity = service.save(category);
 		CategoryV1VO vo = mapper.convertEntityToVO(entity);
@@ -47,8 +49,10 @@ public class CategoryController {
 	}
 	
 	@GetMapping(value = "/v1")
-	public List<Category> findAll() {
-		return service.findAll();
+	public List<CategoryV1VO> findAll() {
+		List<Category> entityList = service.findAll();
+		List<CategoryV1VO> voList = mapper.convertEntityListToV1VOList(entityList);
+		return voList;
 	}
 	
 	@PutMapping(value = "/v1")
