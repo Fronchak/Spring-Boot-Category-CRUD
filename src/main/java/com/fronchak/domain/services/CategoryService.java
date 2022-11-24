@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fronchak.domain.entities.Category;
+import com.fronchak.domain.exceptions.ResourceNotFoundException;
 import com.fronchak.domain.repositories.CategoryRepository;
 
 @Service
@@ -23,7 +24,8 @@ public class CategoryService {
 	}
 	
 	public Category findById(Long id) {
-		return repository.findById(id).get();
+		return repository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("There is no category saved with this ID: " + id));
 	}
 	
 	public Category update(Category category) {
