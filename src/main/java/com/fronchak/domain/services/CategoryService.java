@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.fronchak.domain.entities.Category;
 import com.fronchak.domain.exceptions.ResourceNotFoundException;
+import com.fronchak.domain.exceptions.ValidationException;
 import com.fronchak.domain.repositories.CategoryRepository;
 
 @Service
@@ -16,7 +17,15 @@ public class CategoryService {
 	private CategoryRepository repository;
 	
 	public Category save(Category category) {
+		if(thereIsAnotherCategoryWithTheSameName(category)) {
+			throw new ValidationException("Already exist one category saved with the same name");
+		}
 		return repository.save(category);
+	}
+	
+	private boolean thereIsAnotherCategoryWithTheSameName(Category category) {
+		List<Category> categories = findAll();
+		return categories.stream().anyMatch((entity) -> entity.getName().equals(category.getName()));
 	}
 	
 	public List<Category> findAll() {

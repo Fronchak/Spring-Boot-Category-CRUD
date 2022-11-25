@@ -10,7 +10,7 @@ public class CategoryInsertV1VO {
 	private String name;
 	
 	@NotBlank(message = "Category's description cannot be empty")
-	@Size(max = 30, message = "Category's description cannot have more than 255 characters")
+	@Size(max = 255, message = "Category's description cannot have more than 255 characters")
 	private String description;
 	
 	public String getName() {

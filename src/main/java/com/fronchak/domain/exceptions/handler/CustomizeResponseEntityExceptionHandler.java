@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.fronchak.domain.exceptions.ExceptionResponse;
 import com.fronchak.domain.exceptions.ResourceNotFoundException;
+import com.fronchak.domain.exceptions.ValidationException;
 
 @RestController
 @ControllerAdvice
@@ -65,6 +66,10 @@ public class CustomizeResponseEntityExceptionHandler extends ResponseEntityExcep
 		return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
 	}
 	
-	
+	@ExceptionHandler(ValidationException.class)
+	public final ResponseEntity<ExceptionResponse> handleValidationException(ValidationException e, WebRequest request) {
+		ExceptionResponse response = makeResponse(e, request);
+		return new ResponseEntity<ExceptionResponse>(response, HttpStatus.BAD_REQUEST);
+	}
 	
 }
