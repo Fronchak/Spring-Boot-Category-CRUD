@@ -17,15 +17,27 @@ public class CategoryService {
 	private CategoryRepository repository;
 	
 	public Category save(Category category) {
+		validateThatThereIsNoOtherCategoryWithTheSameNameSaved(category);
+		return repository.save(category);
+	}
+	
+	private void validateThatThereIsNoOtherCategoryWithTheSameNameSaved(Category category) {
 		if(thereIsAnotherCategoryWithTheSameName(category)) {
 			throw new ValidationException("Already exist one category saved with the same name");
 		}
-		return repository.save(category);
 	}
 	
 	private boolean thereIsAnotherCategoryWithTheSameName(Category category) {
 		List<Category> categories = findAll();
-		return categories.stream().anyMatch((entity) -> entity.getName().equals(category.getName()));
+		return categories.stream().anyMatch((entity) -> categoriesNameAreTheSame(entity, category));
+	}
+	
+	private boolean categoriesNameAreTheSame(Category source, Category target) {
+		return source.getName().equals(target.getName());
+	}
+	
+	private boolean categoriesNameAreNotTheSame(Category source, Category target) {
+		return !categoriesNameAreTheSame(source, target);
 	}
 	
 	public List<Category> findAll() {
@@ -38,6 +50,10 @@ public class CategoryService {
 	}
 	
 	public Category update(Category category) {
+		Category entity = findById(category.getId());
+		if(categoriesNameAreNotTheSame(entity, category)) {
+			validateThatThereIsNoOtherCategoryWithTheSameNameSaved(category);
+		}
 		return repository.save(category);
 	}
 	
